@@ -1,0 +1,152 @@
+<div style="padding: 0px 60px 0px 60px;" class="card">
+  <p-toast />
+  <p-toolbar styleClass="mb-4 gap-2">
+      <ng-template pTemplate="left">
+          <p-button 
+              pRipple 
+              severity="success" 
+              label="New Party" 
+              icon="pi pi-plus" 
+              (click)="openNew()" />
+      </ng-template>
+      <ng-template pTemplate="right">
+        <p-button 
+            pRipple 
+            severity="danger" 
+            label="Logout" 
+            icon="pi pi-sign-out" 
+            (click)="logoutUser()" />
+    </ng-template>
+  </p-toolbar>
+
+  <p-table #dt [columns]="columns" [value]="parties" [rows]="5" [paginator]="true" [tableStyle]="{ 'min-width': '75rem' }" 
+  [rowHover]="true" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          @for (col of columns; track $index) {
+          <th>
+            {{ col.header }}
+          </th>
+          }
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+          @for (col of columns; track $index) {
+            @if (['login_access','apply_tds','is_active'].includes(col.field)) {
+              <td><p-tag [value]="rowData[col.field]" [severity]="rowData[col.field] ? 'success' : 'danger'" /></td>
+            } @else {
+              <td>{{ rowData[col.field] }} </td>
+            }
+          }
+          <td style="display: flex;">
+            <p-button pRipple icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="success" (click)="editParty(rowData)" />
+            <p-button pRipple icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteParty($event,rowData)" />
+        </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+          <div class="flex align-items-center justify-content-between">
+              In total there are {{ parties ? parties.length : 0 }} parties.
+          </div>
+      </ng-template>
+  </p-table>
+
+  <p-dialog 
+      [(visible)]="productDialog" 
+      [style]="{ width: '1000px' }" 
+      header="Party Details" 
+      [modal]="true" 
+      styleClass="p-fluid">
+          <ng-template pTemplate="content">
+            @for (elements of form; track $index) {
+              @if($index === 0) {
+                <div class="formgrid grid">
+                    @for (element of elements; track $index) {
+                      <div class="field col">
+                        <label [for]="element.key">{{element.label}}</label>
+                          <input 
+                              [type]="element.type" 
+                              pInputText 
+                              [id]="element.key"
+                              [(ngModel)]="payload[element.key]"  
+                              required  />
+                      </div>
+                    }
+                  </div>
+              } @else if ($index === 1) {
+                <div class="formgrid grid">
+                  @for (element of elements; track $index) {
+                    <div class="field col">
+                      <label [for]="element.key">{{element.label}}</label>
+                        <input 
+                            [type]="element.type" 
+                            pInputText 
+                            [id]="element.key" 
+                            [(ngModel)]="payload[element.key]" 
+                            required  />
+                    </div>
+                  }
+                </div>
+              } @else if ($index === 2) {
+                <div class="formgrid grid">
+                  @for (element of elements; track $index) {
+                    <div class="field col">
+                      <label [for]="element.key">{{element.label}}</label>
+                        <input 
+                            [type]="element.type" 
+                            pInputText 
+                            [id]="element.key" 
+                            [(ngModel)]="payload[element.key]" 
+                            required  />
+                    </div>
+                  }
+                </div>
+              } @else if ($index === 3) {
+                <div class="formgrid grid">
+                  @for (element of elements; track $index) {
+                    <div class="field col">
+                      <label [for]="element.key">{{element.label}}</label>
+                        <input 
+                            [type]="element.type" 
+                            pInputText 
+                            [id]="element.key" 
+                            [(ngModel)]="payload[element.key]" 
+                            required  />
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="formgrid grid">
+                  @for (element of elements; track $index) {
+                    <div class="field col flex gap-2">
+                      <p-checkbox 
+                      [binary]="true" 
+                      [(ngModel)]="payload[element.key]" 
+                      [inputId]="element.key" />
+                      <label [for]="element.key">{{element.label}}</label>
+                    </div>
+                    }
+                </div>
+              }
+            }
+          </ng-template>
+
+          <ng-template pTemplate="footer">
+              <p-button 
+                  pRipple 
+                  label="Cancel" 
+                  icon="pi pi-times" 
+                  [text]="true" 
+                  (click)="hideDialog()" />
+              <p-button 
+                  pRipple 
+                  label="Save" 
+                  icon="pi pi-check" 
+                  [text]="true" 
+                  (click)="addNewParty()" />
+          </ng-template>
+  </p-dialog>
+
+  <p-confirmDialog [style]="{ width: '450px' }" />
+</div>
